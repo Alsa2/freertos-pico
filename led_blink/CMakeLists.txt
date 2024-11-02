@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.13)
 
 # Pull in SDK (must be before project)
-include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
+#include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
+include(/home/aleks/git/pico-sdk/external/pico_sdk_import.cmake)
 
 # Pull in FreeRTOS
 #include($ENV{FREERTOS_KERNEL_PATH}/portable/ThirdParty/GCC/RP2040/FreeRTOS_Kernel_import.cmake)
@@ -14,11 +15,13 @@ set(CMAKE_CXX_STANDARD 17)
 # Initialize the SDK
 pico_sdk_init()
 
+set(PICO_BOARD pico_w)
+
 add_executable(blink main.c)
 
 target_include_directories(blink PRIVATE ${CMAKE_CURRENT_LIST_DIR})
  
-# pull in common dependencdcies
+# pull in common dependencies
 target_link_libraries(blink pico_stdlib FreeRTOS-Kernel FreeRTOS-Kernel-Heap4)
 
 # create map/bin/hex/uf2 file etc.

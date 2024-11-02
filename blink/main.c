@@ -1,35 +1,42 @@
+#include <stdio.h>
 #include "pico/stdlib.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "queue.h"
 
-#define LED_PIN1 14 // GPIO pin for the external LED
-#define LED_PIN2 15 // Blinking delay in milliseconds
 
-void vBlinkTask1() {
+#define LED_PIN1 15 // GPIO pin for the external LED
+
+static QueueHandle_t xQueue = NULL;
+
+void vBlinkTask() {
+   uint uIValueToSend = 0;
    for (;;) {
       gpio_put(LED_PIN1, 1);
+      uIValueToSend = 1;
+      xQueueSend(xQueue, &uIValueToSend, 0);
       vTaskDelay(1000);
       gpio_put(LED_PIN1, 0);
+      uIValueToSend = 0;
+      xQueueSend(xQueue, &uIValueToSend, 0);
       vTaskDelay(1000);
    }
 }
 
-void vBlinkTask2() {
+void vUsbTask(void *pvParameters) {
    for (;;) {
-      gpio_put(LED_PIN2, 1);
-      vTaskDelay(500);
-      gpio_put(LED_PIN2, 0);
-      vTaskDelay(500);
+      uint uIReceivedValue = 0;
+      xQueueReceive(xQueue, &uIReceivedValue, portMAX_DELAY);
+      printf("Received value: %d\n", uIReceivedValue);
    }
 }
 
-
 void main() {
+   xQueue = xQueueCreate(1, sizeof(uint));
+
    gpio_init(LED_PIN1);
    gpio_set_dir(LED_PIN1, GPIO_OUT);
-   gpio_init(LED_PIN2);
-   gpio_set_dir(LED_PIN2, GPIO_OUT);
-   xTaskCreate(vBlinkTask1, "Blink Task 1", 128, NULL, 1, NULL);
-   xTaskCreate(vBlinkTask2, "Blink Task 2", 128, NULL, 1, NULL);
+   xTaskCreate(vBlinkTask, "Blink Task", 128, NULL, 1, NULL);
+   xTaskCreate(vUsbTask, "USB Task", 128, NULL, 1, NULL);
    vTaskStartScheduler();
 }
