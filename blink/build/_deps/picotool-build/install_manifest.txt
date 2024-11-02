@@ -1,5 +1,0 @@
-/home/aleks/Documents/freertos-pico/blink/build/_deps/picotool/picotool
-/home/aleks/Documents/freertos-pico/blink/build/_deps/picotool/picotoolTargets.cmake
-/home/aleks/Documents/freertos-pico/blink/build/_deps/picotool/picotoolTargets-release.cmake
-/home/aleks/Documents/freertos-pico/blink/build/_deps/picotool/picotoolConfig.cmake
-/home/aleks/Documents/freertos-pico/blink/build/_deps/picotool/picotoolConfigVersion.cmake
